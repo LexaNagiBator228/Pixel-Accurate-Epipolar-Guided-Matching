@@ -86,48 +86,34 @@
       margin: 40px 0;
     }
 
-    .teaser img {
+    .figure {
+      text-align: center;
+      margin: 40px 0;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .figure img,
+    .figure object {
       max-width: 100%;
       height: auto;
-      border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
     }
 
-    .pdf-container {
-      text-align: center;
-      margin: 30px 0;
-      border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-      overflow: hidden;
+    .figure-caption {
+      margin-top: 15px;
+      font-style: italic;
+      color: #555;
+      font-size: 0.95em;
+      line-height: 1.4;
     }
 
-    .pdf-embed {
-      width: 100%;
-      height: 600px;
-      border: none;
-      border-radius: 10px;
-    }
-
-    .pdf-fallback {
-      padding: 40px;
-      background: #f8f9fa;
-      text-align: center;
-      border-radius: 10px;
-    }
-
-    .pdf-fallback a {
-      display: inline-block;
-      margin: 10px;
-      padding: 12px 24px;
-      background: #3498db;
-      color: white;
-      text-decoration: none;
-      border-radius: 5px;
+    .figure-number {
       font-weight: bold;
-    }
-
-    .pdf-fallback a:hover {
-      background: #2980b9;
+      color: #2c3e50;
     }
 
     .abstract {
@@ -198,8 +184,8 @@
       <h1>Pixel-Accurate Epipolar Guided Matching</h1>
       <div class="venue">3DV 2026</div>
       <div class="authors">
-        <span>Authors: Oleksii Nasypanyi and Co-authors</span><br>
-        <small>(Author list will be updated)</small>
+        <span>Oleksii Nasypanyi<sup>1</sup>, Francois Rameau<sup>2</sup></span><br>
+        <small><sup>1</sup>Stony Brook University, USA &nbsp;&nbsp; <sup>2</sup>SUNY Korea, Incheon, Korea</small>
       </div>
     </div>
 
@@ -213,18 +199,16 @@
     </div>
 
     <!-- Teaser Figure -->
-    <div class="teaser">
-      <div class="pdf-container">
-        <embed src="assets/teaser_figure.pdf" type="application/pdf" class="pdf-embed">
-        <div class="pdf-fallback">
-          <h3>📄 Teaser Figure</h3>
-          <p>Your browser doesn't support PDF embedding. You can:</p>
-          <a href="assets/teaser_figure.pdf" target="_blank">📄 View PDF</a>
-          <a href="assets/teaser_figure.pdf" download>⬇️ Download PDF</a>
-        </div>
+    <div class="figure">
+      <object data="assets/teaser_figure.pdf" type="application/pdf" width="100%" height="500">
+        <p>Your browser doesn't support PDFs. <a href="assets/teaser_figure.pdf" target="_blank">Download the PDF</a> to
+          view the teaser figure.</p>
+      </object>
+      <div class="figure-caption">
+        <span class="figure-number">Figure 1:</span> Overview of our angular interval-based epipolar guided matching.
+        Keypoints are associated with tolerance circles viewed as angular intervals from the epipole, enabling fast
+        candidate queries using segment trees.
       </div>
-      <p><em>Figure: Our pixel-accurate epipolar guided matching approach achieves state-of-the-art performance on
-          challenging stereo matching scenarios.</em></p>
     </div>
 
     <!-- News -->
@@ -233,7 +217,7 @@
         <h2>🔥 News</h2>
         <ul>
           <li><strong>[January 2026]</strong> Paper accepted to 3DV 2026! 🎉</li>
-          <li><strong>[Coming Soon]</strong> Source code and pre-trained models will be released</li>
+          <li><strong>[Coming Soon]</strong> Source code will be released upon paper acceptance</li>
           <li><strong>[Coming Soon]</strong> Paper will be available on arXiv</li>
         </ul>
       </div>
@@ -242,11 +226,14 @@
     <!-- Abstract -->
     <div class="abstract">
       <h2>Abstract</h2>
-      <p>Pixel-accurate stereo matching remains a challenging problem in computer vision, particularly when dealing with
-        textureless regions, occlusions, and repetitive patterns. This work presents a novel approach for pixel-accurate
-        epipolar guided matching that leverages geometric constraints to improve stereo correspondence accuracy. Our
-        method combines deep learning with classical epipolar geometry principles to achieve state-of-the-art
-        performance on standard benchmarks.</p>
+      <p>Keypoint matching can be slow and unreliable in challenging conditions such as repetitive textures or
+        wide-baseline views. In such cases, known geometric relations (e.g., the fundamental matrix) can be used to
+        restrict potential correspondences to a narrow epipolar envelope, thereby reducing the search space and
+        improving robustness. These epipolar-guided matching approaches have proved effective in tasks such as SfM;
+        however, most rely on coarse spatial binning, which introduces approximation errors, requires costly
+        post-processing, and may miss valid correspondences. We address these limitations with an exact formulation that
+        performs candidate selection directly in angular space using tolerance circles and segment trees for
+        logarithmic-time queries.</p>
     </div>
 
     <!-- Key Features -->
@@ -254,20 +241,20 @@
       <h2>Key Features</h2>
       <div class="features">
         <div class="feature-card">
-          <h3>🎯 Pixel-Accurate</h3>
-          <p>Sub-pixel accurate disparity estimation with geometric refinement</p>
+          <h3>🎯 Exact Formulation</h3>
+          <p>Pixel-level tolerance without approximation errors or spatial discretization</p>
         </div>
         <div class="feature-card">
-          <h3>🛡️ Robust Matching</h3>
-          <p>Handles challenging scenarios including textureless regions and occlusions</p>
+          <h3>🚪️ Fast Queries</h3>
+          <p>Logarithmic-time candidate retrieval using segment tree data structure</p>
         </div>
         <div class="feature-card">
-          <h3>⚡ Real-Time</h3>
-          <p>Efficient inference suitable for real-time applications</p>
+          <h3>⚡ Efficient</h3>
+          <p>Eliminates unnecessary descriptor comparisons and geometric post-processing</p>
         </div>
         <div class="feature-card">
-          <h3>🏆 State-of-the-Art</h3>
-          <p>Achieves top performance on standard stereo matching benchmarks</p>
+          <h3>🏆 Flexible Control</h3>
+          <p>Per-keypoint tolerance settings and robust handling of epipole configurations</p>
         </div>
       </div>
     </div>
@@ -282,7 +269,8 @@
         <li><strong>Pixel-Accurate Refinement:</strong> Sub-pixel accurate disparity estimation through geometric
           optimization</li>
         <li><strong>Robust Geometric Verification:</strong> Geometric consistency checking for outlier rejection</li>
-        <li><strong>End-to-End Learning:</strong> Fully trainable pipeline optimized for accuracy and efficiency</li>
+        <li><strong>Efficient Implementation:</strong> Optimized algorithm suitable for practical stereo vision
+          applications</li>
       </ul>
     </div>
 
@@ -291,24 +279,25 @@
       <h2>Results</h2>
 
       <!-- Matching Results Figure -->
-      <div class="pdf-container">
-        <embed src="assets/matching_num.pdf" type="application/pdf" class="pdf-embed">
-        <div class="pdf-fallback">
-          <h3>📊 Matching Results</h3>
-          <p>Your browser doesn't support PDF embedding. You can:</p>
-          <a href="assets/matching_num.pdf" target="_blank">📄 View PDF</a>
-          <a href="assets/matching_num.pdf" download>⬇️ Download PDF</a>
+      <div class="figure">
+        <object data="assets/matching_num.pdf" type="application/pdf" width="100%" height="500">
+          <p>Your browser doesn't support PDFs. <a href="assets/matching_num.pdf" target="_blank">Download the PDF</a>
+            to view the matching results.</p>
+        </object>
+        <div class="figure-caption">
+          <span class="figure-number">Figure 2:</span> Quantitative matching results demonstrating the effectiveness of
+          our pixel-accurate epipolar guided approach.
         </div>
       </div>
-      <p><em>Quantitative matching results demonstrating the effectiveness of our pixel-accurate epipolar guided
-          approach.</em></p>
 
       <p><strong>Key Findings:</strong></p>
       <ul>
-        <li>Superior performance on challenging stereo matching benchmarks</li>
-        <li>Robust handling of textureless regions and occlusions</li>
-        <li>Pixel-accurate disparity estimation with sub-pixel refinement</li>
-        <li>Comprehensive evaluation on KITTI, Middlebury, and ETH3D datasets</li>
+        <li>Consistent speedups over existing epipolar-guided matching approaches (Grid-based and Epipolar Hashing)</li>
+        <li>Perfect candidate recall (1.00) - recovers all valid correspondences within epipolar envelope</li>
+        <li>Logarithmic query complexity O(log n + k) vs linear complexity of existing methods</li>
+        <li>Robust performance across all 13 ETH3D sequences with varying scene complexity</li>
+        <li>Eliminates false positives and negatives through exact geometric formulation</li>
+        <li>Scalable performance: up to 10x faster candidate generation at high keypoint densities (50k points)</li>
       </ul>
     </div>
 
