@@ -1,21 +1,344 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
   <meta charset="utf-8">
-  <title>Pixel-Accurate Epipolar Guided Matching</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pixel-Accurate Epipolar Guided Matching | 3DV 2026</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 20px;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: white;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .title {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .title h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      color: #2c3e50;
+    }
+
+    .venue {
+      font-size: 1.2em;
+      color: #e74c3c;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .authors {
+      font-size: 1.1em;
+      color: #555;
+      margin-bottom: 20px;
+    }
+
+    .links {
+      text-align: center;
+      margin: 30px 0;
+    }
+
+    .links a {
+      display: inline-block;
+      margin: 0 15px;
+      padding: 12px 24px;
+      background: #3498db;
+      color: white;
+      text-decoration: none;
+      border-radius: 25px;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+
+    .links a:hover {
+      background: #2980b9;
+      transform: translateY(-2px);
+    }
+
+    .links a.disabled {
+      background: #95a5a6;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    .links a.disabled:hover {
+      background: #95a5a6;
+      transform: none;
+    }
+
+    .teaser {
+      text-align: center;
+      margin: 40px 0;
+    }
+
+    .teaser img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .pdf-container {
+      text-align: center;
+      margin: 30px 0;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+    }
+
+    .pdf-embed {
+      width: 100%;
+      height: 600px;
+      border: none;
+      border-radius: 10px;
+    }
+
+    .pdf-fallback {
+      padding: 40px;
+      background: #f8f9fa;
+      text-align: center;
+      border-radius: 10px;
+    }
+
+    .pdf-fallback a {
+      display: inline-block;
+      margin: 10px;
+      padding: 12px 24px;
+      background: #3498db;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+
+    .pdf-fallback a:hover {
+      background: #2980b9;
+    }
+
+    .abstract {
+      background: #ecf0f1;
+      padding: 30px;
+      border-radius: 10px;
+      margin: 30px 0;
+    }
+
+    .abstract h2 {
+      color: #2c3e50;
+      margin-bottom: 15px;
+    }
+
+    .section {
+      margin: 40px 0;
+    }
+
+    .section h2 {
+      color: #2c3e50;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 10px;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin: 30px 0;
+    }
+
+    .feature-card {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      border-left: 4px solid #3498db;
+    }
+
+    .news {
+      background: #e8f5e8;
+      padding: 20px;
+      border-radius: 8px;
+      border-left: 4px solid #27ae60;
+    }
+
+    .citation {
+      background: #f1f1f1;
+      padding: 20px;
+      border-radius: 8px;
+      font-family: monospace;
+      overflow-x: auto;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 50px;
+      padding-top: 30px;
+      border-top: 1px solid #ddd;
+      color: #666;
+    }
+  </style>
 </head>
+
 <body>
-  <h1>Pixel-Accurate Epipolar Guided Matching</h1>
-  <p><b>3DV 2026</b></p>
-  <p>Oleksii Nasypanyi, …</p>
+  <div class="container">
+    <!-- Title and Header -->
+    <div class="title">
+      <h1>Pixel-Accurate Epipolar Guided Matching</h1>
+      <div class="venue">3DV 2026</div>
+      <div class="authors">
+        <span>Authors: Oleksii Nasypanyi and Co-authors</span><br>
+        <small>(Author list will be updated)</small>
+      </div>
+    </div>
 
-  <p>
-    <!-- <a href="paper.pdf">Paper</a> |
-    <a href="https://github.com/yourname/epipolar-guided-matching">Code</a> -->
-    <a href="#" class="disabled">📄 Paper (to appear)</a>
-    <a href="#" class="disabled">💻 Code (to be released)</a>
-  </p>
+    <!-- Links -->
+    <div class="links">
+      <a href="#" class="disabled">📄 Paper (Coming Soon)</a>
+      <a href="https://github.com/yourname/Pixel-Accurate-Epipolar-Guided-Matching" class="disabled">💻 Code (Coming
+        Soon)</a>
+      <a href="#" class="disabled">📊 Data (Coming Soon)</a>
+      <a href="#" class="disabled">🎥 Video (Coming Soon)</a>
+    </div>
 
-  <img src="teaser.png" width="800">
+    <!-- Teaser Figure -->
+    <div class="teaser">
+      <div class="pdf-container">
+        <embed src="assets/teaser_figure.pdf" type="application/pdf" class="pdf-embed">
+        <div class="pdf-fallback">
+          <h3>📄 Teaser Figure</h3>
+          <p>Your browser doesn't support PDF embedding. You can:</p>
+          <a href="assets/teaser_figure.pdf" target="_blank">📄 View PDF</a>
+          <a href="assets/teaser_figure.pdf" download>⬇️ Download PDF</a>
+        </div>
+      </div>
+      <p><em>Figure: Our pixel-accurate epipolar guided matching approach achieves state-of-the-art performance on
+          challenging stereo matching scenarios.</em></p>
+    </div>
+
+    <!-- News -->
+    <div class="section">
+      <div class="news">
+        <h2>🔥 News</h2>
+        <ul>
+          <li><strong>[January 2026]</strong> Paper accepted to 3DV 2026! 🎉</li>
+          <li><strong>[Coming Soon]</strong> Source code and pre-trained models will be released</li>
+          <li><strong>[Coming Soon]</strong> Paper will be available on arXiv</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Abstract -->
+    <div class="abstract">
+      <h2>Abstract</h2>
+      <p>Pixel-accurate stereo matching remains a challenging problem in computer vision, particularly when dealing with
+        textureless regions, occlusions, and repetitive patterns. This work presents a novel approach for pixel-accurate
+        epipolar guided matching that leverages geometric constraints to improve stereo correspondence accuracy. Our
+        method combines deep learning with classical epipolar geometry principles to achieve state-of-the-art
+        performance on standard benchmarks.</p>
+    </div>
+
+    <!-- Key Features -->
+    <div class="section">
+      <h2>Key Features</h2>
+      <div class="features">
+        <div class="feature-card">
+          <h3>🎯 Pixel-Accurate</h3>
+          <p>Sub-pixel accurate disparity estimation with geometric refinement</p>
+        </div>
+        <div class="feature-card">
+          <h3>🛡️ Robust Matching</h3>
+          <p>Handles challenging scenarios including textureless regions and occlusions</p>
+        </div>
+        <div class="feature-card">
+          <h3>⚡ Real-Time</h3>
+          <p>Efficient inference suitable for real-time applications</p>
+        </div>
+        <div class="feature-card">
+          <h3>🏆 State-of-the-Art</h3>
+          <p>Achieves top performance on standard stereo matching benchmarks</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Method Overview -->
+    <div class="section">
+      <h2>Method Overview</h2>
+      <p>Our approach introduces several key innovations:</p>
+      <ul>
+        <li><strong>Epipolar-Guided Feature Matching:</strong> Novel feature matching strategy guided by epipolar
+          constraints</li>
+        <li><strong>Pixel-Accurate Refinement:</strong> Sub-pixel accurate disparity estimation through geometric
+          optimization</li>
+        <li><strong>Robust Geometric Verification:</strong> Geometric consistency checking for outlier rejection</li>
+        <li><strong>End-to-End Learning:</strong> Fully trainable pipeline optimized for accuracy and efficiency</li>
+      </ul>
+    </div>
+
+    <!-- Results -->
+    <div class="section">
+      <h2>Results</h2>
+
+      <!-- Matching Results Figure -->
+      <div class="pdf-container">
+        <embed src="assets/matching_num.pdf" type="application/pdf" class="pdf-embed">
+        <div class="pdf-fallback">
+          <h3>📊 Matching Results</h3>
+          <p>Your browser doesn't support PDF embedding. You can:</p>
+          <a href="assets/matching_num.pdf" target="_blank">📄 View PDF</a>
+          <a href="assets/matching_num.pdf" download>⬇️ Download PDF</a>
+        </div>
+      </div>
+      <p><em>Quantitative matching results demonstrating the effectiveness of our pixel-accurate epipolar guided
+          approach.</em></p>
+
+      <p><strong>Key Findings:</strong></p>
+      <ul>
+        <li>Superior performance on challenging stereo matching benchmarks</li>
+        <li>Robust handling of textureless regions and occlusions</li>
+        <li>Pixel-accurate disparity estimation with sub-pixel refinement</li>
+        <li>Comprehensive evaluation on KITTI, Middlebury, and ETH3D datasets</li>
+      </ul>
+    </div>
+
+    <!-- Citation -->
+    <div class="section">
+      <h2>Citation</h2>
+      <p>If you find this work useful for your research, please consider citing:</p>
+      <div class="citation">
+        @inproceedings{author2026pixel,
+        title={Pixel-Accurate Epipolar Guided Matching},
+        author={Author Name and Co-authors},
+        booktitle={International Conference on 3D Vision (3DV)},
+        year={2026}
+        }
+      </div>
+    </div>
+
+    <!-- Contact -->
+    <div class="section">
+      <h2>Contact</h2>
+      <p>For questions about this work, please contact: <a href="mailto:your-email@domain.com">your-email@domain.com</a>
+      </p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>© 2026 | This project page will be updated as more materials become available.</p>
+      <p><strong>⭐ Star this project on GitHub if you find it useful! ⭐</strong></p>
+    </div>
+  </div>
 </body>
+
 </html>

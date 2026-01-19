@@ -1,0 +1,18 @@
+name: Pixel-Accurate Epipolar Guided Matching
+description: Official implementation of "Pixel-Accurate Epipolar Guided Matching" accepted at 3DV 2026
+url: https://yourname.github.io/Pixel-Accurate-Epipolar-Guided-Matching/
+topics:
+  - computer-vision
+  - stereo-matching
+  - epipolar-geometry
+  - 3d-vision
+  - deep-learning
+  - pytorch
+  - 3dv2026
+include:
+  - "*.md"
+  - "*.html"
+  - "*.css"
+  - "*.js"
+  - "assets/**"
+  - "docs/**"
