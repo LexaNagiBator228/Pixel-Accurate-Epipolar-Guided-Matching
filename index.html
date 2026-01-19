@@ -204,10 +204,8 @@
 
     <!-- Teaser Figure -->
     <div class="figure">
-      <object data="assets/teaser_figure.pdf" type="application/pdf">
-        <p>Your browser doesn't support PDFs. <a href="assets/teaser_figure.pdf" target="_blank">Download the PDF</a> to
-          view the teaser figure.</p>
-      </object>
+      <img src="assets/teaser_figure.pdf"
+        alt="Teaser Figure - Angular interval-based epipolar guided matching overview">
       <div class="figure-caption">
         <span class="figure-number">Figure 1:</span> Overview of our angular interval-based epipolar guided matching.
         Keypoints are associated with tolerance circles viewed as angular intervals from the epipole, enabling fast
@@ -268,13 +266,15 @@
       <h2>Method Overview</h2>
       <p>Our approach introduces several key innovations:</p>
       <ul>
-        <li><strong>Epipolar-Guided Feature Matching:</strong> Novel feature matching strategy guided by epipolar
-          constraints</li>
-        <li><strong>Pixel-Accurate Refinement:</strong> Sub-pixel accurate disparity estimation through geometric
-          optimization</li>
-        <li><strong>Robust Geometric Verification:</strong> Geometric consistency checking for outlier rejection</li>
-        <li><strong>Efficient Implementation:</strong> Optimized algorithm suitable for practical stereo vision
-          applications</li>
+        <li><strong>Angular Interval Formulation:</strong> Reformulates epipolar envelope constraints as 1D angular
+          intervals viewed from the epipole</li>
+        <li><strong>Tolerance Circle Method:</strong> Associates each keypoint with tolerance circles that define
+          angular visibility regions</li>
+        <li><strong>Segment Tree Data Structure:</strong> Enables logarithmic-time candidate queries using balanced
+          segment trees</li>
+        <li><strong>Exact Geometric Filtering:</strong> Guarantees pixel-level precision without approximation errors or
+          post-processing</li>
+        <li><strong>Per-Keypoint Control:</strong> Supports individual tolerance settings for enhanced flexibility</li>
       </ul>
     </div>
 
@@ -284,10 +284,7 @@
 
       <!-- Matching Results Figure -->
       <div class="figure">
-        <object data="assets/matching_num.pdf" type="application/pdf">
-          <p>Your browser doesn't support PDFs. <a href="assets/matching_num.pdf" target="_blank">Download the PDF</a>
-            to view the matching results.</p>
-        </object>
+        <img src="assets/matching_num.pdf" alt="Matching Results - Quantitative performance comparison">
         <div class="figure-caption">
           <span class="figure-number">Figure 2:</span> Quantitative matching results demonstrating the effectiveness of
           our pixel-accurate epipolar guided approach.
@@ -310,9 +307,9 @@
       <h2>Citation</h2>
       <p>If you find this work useful for your research, please consider citing:</p>
       <div class="citation">
-        @inproceedings{author2026pixel,
+        @inproceedings{nasypanyi2026pixel,
         title={Pixel-Accurate Epipolar Guided Matching},
-        author={Author Name and Co-authors},
+        author={Oleksii Nasypanyi and Francois Rameau},
         booktitle={International Conference on 3D Vision (3DV)},
         year={2026}
         }

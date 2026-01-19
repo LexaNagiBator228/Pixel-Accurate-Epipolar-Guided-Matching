@@ -69,7 +69,7 @@ If you find this work useful for your research, please consider citing:
 ```bibtex
 @inproceedings{nasypanyi2026pixel,
     title={Pixel-Accurate Epipolar Guided Matching},
-    author={Oleksii Nasypanyi and Francois Rameau},
+    author={Oleksii Nasypanyi and Rameau Francois Bernard Julien},
     booktitle={International Conference on 3D Vision (3DV)},
     year={2026}
 }
