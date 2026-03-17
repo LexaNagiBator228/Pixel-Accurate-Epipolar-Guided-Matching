@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/oleksii/dev/Pixel-Accurate-Epipolar-Guided-Matching/cpp/build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

@@ -1,0 +1,6 @@
+# Image list with two lines of data per image:
+#   IMAGE_ID, QW, QX, QY, QZ, TX, TY, TZ, CAMERA_ID, NAME
+#   POINTS2D[] as (X, Y, POINT3D_ID)
+# Number of images: 38, mean observations per image: 3653.18
+35 0.823147 0.563401 0.0222614 -0.0671804 -8.70232 5.07219 7.09734 1 dslr_images/DSC_0320.JPG
+36 0.822056 0.567146 0.0212268 -0.0460273 -11.6438 4.70088 6.90092 1 dslr_images/DSC_0321.JPG

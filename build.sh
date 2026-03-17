@@ -27,7 +27,7 @@ cmake cpp -B "$BUILD_DIR" \
 
 echo ""
 echo "[2/2] Building..."
-cmake --build "$BUILD_DIR" --config Release --parallel
+cmake --build "$BUILD_DIR" --config Release --parallel "$(nproc)"
 
 echo ""
 echo "============================================================"

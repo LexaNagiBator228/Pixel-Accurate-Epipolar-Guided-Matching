@@ -18,7 +18,9 @@ Then import:
 try:
     from .guided_desc_match import (
         epipolar_wedge_filter_with_segment_tree,
+        epipolar_wedge_filter_with_segment_tree_origin,
         epipolar_geometric_distance_filter,
+        epipolar_hash_filter_cpp,
     )
 except ImportError as _e:
     raise ImportError(
@@ -32,5 +34,7 @@ except ImportError as _e:
 
 __all__ = [
     "epipolar_wedge_filter_with_segment_tree",
+    "epipolar_wedge_filter_with_segment_tree_origin",
     "epipolar_geometric_distance_filter",
+    "epipolar_hash_filter_cpp",
 ]
