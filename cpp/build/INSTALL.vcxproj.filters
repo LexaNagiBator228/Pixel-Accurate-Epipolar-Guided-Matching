@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\dev\Pixel-Accurate-Epipolar-Guided-Matching\cpp\build\CMakeFiles\3e0f771acef3328f399bc06329f034cb\INSTALL_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{82B4AC8B-4C1A-3F18-BD79-5349BDC2BA6E}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

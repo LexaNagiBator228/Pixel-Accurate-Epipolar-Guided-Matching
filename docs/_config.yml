@@ -15,4 +15,3 @@ include:
   - "*.css"
   - "*.js"
   - "assets/**"
-  - "docs/**"
