@@ -32,7 +32,7 @@ Keypoint matching can be slow and unreliable in challenging conditions such as r
 - **Exact Geometric Filtering**: Pixel-level precision with no approximation errors
 - **Per-Keypoint Control**: Supports individual tolerance settings
 
-## Results
+<!-- ## Results
 
 <p align="center">
   <img src="docs/assets/matching_num%20(1)_page-0001.jpg" alt="Quantitative results on ETH3D" width="800">
@@ -40,7 +40,7 @@ Keypoint matching can be slow and unreliable in challenging conditions such as r
 
 <p align="center">
   <img src="demo_real_matches.png" alt="Guided SIFT matching on a real calibrated image pair" width="800">
-</p>
+</p> -->
 
 ## Installation
 
