@@ -4,7 +4,7 @@
 
 **[3DV 2026]**
 
-[📄 Paper (Coming Soon)](#) | [💻 Code (Coming Soon)](#) | [🌐 Project Page](https://yourname.github.io/Pixel-Accurate-Epipolar-Guided-Matching/)
+[📄 Paper (Coming Soon)](#) | [💻 Code](https://github.com/LexaNagiBator228/Pixel-Accurate-Epipolar-Guided-Matching) | [🌐 Project Page](https://lexanagibator228.github.io/Pixel-Accurate-Epipolar-Guided-Matching/)
 
 ---
 
@@ -14,53 +14,98 @@
 
 ## 🔥 News
 - **[Jan 2026]** Paper accepted to 3DV 2026! 🎉
-- **[Coming Soon]** Code and pre-trained models will be released
 - **[Coming Soon]** Paper will be available on arXiv
 
 ## 📖 Abstract
 
-Keypoint matching can be slow and unreliable in challenging conditions such as repetitive textures or wide-baseline views. In such cases, known geometric relations (e.g., the fundamental matrix) can be used to restrict potential correspondences to a narrow epipolar envelope, thereby reducing the search space and improving robustness. These epipolar-guided matching approaches have proved effective in tasks such as SfM; however, most rely on coarse spatial binning, which introduces approximation errors, requires costly post-processing, and may miss valid correspondences. We address these limitations with an exact formulation that performs candidate selection directly in angular space using tolerance circles and segment trees for logarithmic-time queries.
+Keypoint matching can be slow and unreliable in challenging conditions such as repetitive textures or wide-baseline views. In such cases, known geometric relations (e.g., the fundamental matrix) can be used to restrict potential correspondences to a narrow epipolar envelope, thereby reducing the search space and improving robustness. These epipolar-guided matching approaches have proved effective in tasks such as SfM; however, most rely on coarse spatial binning, which introduces approximation errors, requires costly post-processing, and may miss valid correspondences. We address these limitations with an exact formulation that performs candidate selection directly in angular space. In our approach, each keypoint is assigned a tolerance circle which, when viewed from the epipole, defines an angular interval. Matching then becomes a 1D angular interval query, solved efficiently in logarithmic time with a segment tree. This guarantees pixel-level tolerance, supports per-keypoint control, and removes unnecessary descriptor comparisons. Extensive evaluation on ETH3D demonstrates noticeable speedups over existing approaches while recovering exact correspondence sets.
 
 ## 🏗️ Method Overview
 
-Our approach introduces:
-- **Angular Interval Formulation**: Reformulates epipolar envelope constraints as 1D angular intervals viewed from the epipole
-- **Tolerance Circle Method**: Associates each keypoint with tolerance circles that define angular visibility regions 
-- **Segment Tree Data Structure**: Enables logarithmic-time candidate queries using balanced segment trees
-- **Exact Geometric Filtering**: Guarantees pixel-level precision without approximation errors
-- **Per-Keypoint Control**: Supports individual tolerance settings for enhanced flexibility
+- **Angular Interval Formulation**: Each keypoint's tolerance disk defines a 1D angular interval as seen from the epipole
+- **Segment Tree Data Structure**: Enables O(log N + K) candidate queries vs. O(N) for brute-force methods
+- **Exact Geometric Filtering**: Pixel-level precision with no approximation errors
+- **Per-Keypoint Control**: Supports individual tolerance settings
 
-## 🎯 Key Features
-
-- ✅ **Exact formulation** without approximation errors
-- ✅ **Logarithmic-time queries** using segment tree data structure  
-- ✅ **Perfect candidate recall** - recovers all valid correspondences
-- ✅ **Scalable performance** up to 50k keypoints per image
-- ✅ **Per-keypoint control** with pixel-level tolerance settings
-
-## 📊 Results
-
-### Quantitative Results
-*Coming soon - detailed benchmark results will be added*
-
-### Qualitative Results  
-*Coming soon - visual comparisons will be added*
-
-## 🚀 Getting Started
+## 🚀 Installation
 
 ### Requirements
-*Coming soon - will be updated when code is released*
 
-### Installation
-```bash
-# Installation instructions will be provided when code is released
-git clone https://github.com/yourname/Pixel-Accurate-Epipolar-Guided-Matching.git
-cd Pixel-Accurate-Epipolar-Guided-Matching
-# pip install -r requirements.txt
+**Python** (≥ 3.8):
+```
+numpy
+opencv-python
+pybind11
 ```
 
-### Quick Demo
-*Coming soon - demo instructions will be provided*
+**C++ build tools:**
+- CMake ≥ 3.14
+- C++17 compiler (GCC ≥ 9, Clang ≥ 10, or MSVC 2019+)
+- Eigen3
+- OpenMP (optional — enables multi-threaded execution)
+
+On Ubuntu/Debian:
+```bash
+sudo apt install cmake libeigen3-dev libomp-dev
+```
+
+On macOS (Homebrew):
+```bash
+brew install cmake eigen libomp
+```
+
+### Build
+
+```bash
+git clone https://github.com/LexaNagiBator228/Pixel-Accurate-Epipolar-Guided-Matching.git
+cd Pixel-Accurate-Epipolar-Guided-Matching
+
+# Install Python dependencies
+pip install numpy opencv-python pybind11
+
+# Build the C++ extension (output goes to epipolar_matching/)
+bash build.sh
+```
+
+The script configures and builds the CMake project, placing the compiled `.so` module in `epipolar_matching/` so it is importable directly from the repo root.
+
+## 🧪 Running the Demos
+
+### Synthetic demo — no data needed
+
+```bash
+python demo.py
+```
+
+Generates two synthetic camera views of 30 k random 3-D points, runs all three epipolar filters (Seg Tree optimised, Seg Tree origin, Angular Hash), prints a recall/timing table, and saves a visualisation to `demo_matches.png`.
+
+Expected output (approximate):
+```
+Method                           Recall   Avg cands   Time (ms)
+────────────────────────────────────────────────────────────────
+CV BF (no epipolar)               0.951         N/A        ...
+Seg Tree (origin)                 1.000       284.4        ...
+Seg Tree (optimised)              1.000       284.4        ...
+Angular Hash                      1.000       284.4        ...
+────────────────────────────────────────────────────────────────
+```
+
+### Real-image demo — calibrated fisheye pair
+
+```bash
+python demo_real.py
+```
+
+Loads a pair of fisheye images from `exc/`, undistorts them using COLMAP camera parameters, extracts 45 k SIFT keypoints per image, and matches them with each filter. Saves results to `demo_real_matches.png`.
+
+Requires the following files in `exc/`:
+
+| File | Description |
+|------|-------------|
+| `cameras.txt` | COLMAP `THIN_PRISM_FISHEYE` camera model |
+| `images_mod.txt` | COLMAP images file (DSC_0320 and DSC_0321 entries) |
+| `DSC_0320.JPG` | First fisheye image |
+| `DSC_0321.JPG` | Second fisheye image |
 
 ## 📚 Citation
 
@@ -68,20 +113,17 @@ If you find this work useful for your research, please consider citing:
 
 ```bibtex
 @inproceedings{nasypanyi2026pixel,
-    title={Pixel-Accurate Epipolar Guided Matching},
-    author={Oleksii Nasypanyi and Rameau Francois Bernard Julien},
-    booktitle={International Conference on 3D Vision (3DV)},
-    year={2026}
+    title     = {Pixel-Accurate Epipolar Guided Matching},
+    author    = {Oleksii Nasypanyi and Francois Rameau},
+    booktitle = {International Conference on 3D Vision (3DV)},
+    year      = {2026}
 }
 ```
 
-## 🙏 Acknowledgements
-
-We thank the reviewers for their constructive feedback and the 3DV 2026 organizing committee.
-
 ## 📧 Contact
 
-For questions about this work, please contact: [your-email@domain.com](mailto:your-email@domain.com)
+- Oleksii Nasypanyi — [oleksii.nasypanyi@stonybrook.edu](mailto:oleksii.nasypanyi@stonybrook.edu) (Stony Brook University)
+- Francois Rameau (SUNY Korea)
 
 ---
 

@@ -6,7 +6,7 @@ Loads two fisheye images from ./exc/, undistorts them, extracts SIFT
 descriptors, then matches them using epipolar-guided candidate filtering
 followed by nearest-neighbour + ratio test among the candidates only.
 
-Compares the segment-tree wedge filter against the brute-force baseline.
+Compares all three epipolar filters: segment-tree (optimised), segment-tree (origin), and angular hash.
 
 Run after building the extension:
     python demo_real.py
@@ -21,7 +21,7 @@ import cv2
 try:
     from epipolar_matching import (
         epipolar_wedge_filter_with_segment_tree,
-        epipolar_geometric_distance_filter,
+        epipolar_wedge_filter_with_segment_tree_origin,
         epipolar_hash_filter_cpp,
     )
 except ImportError:
@@ -32,7 +32,7 @@ except ImportError:
 
 EXC_DIR = Path(__file__).parent / "exc"
 SCALE   = 0.5   # downsample factor 
-RADIUS  = 10.0    # epipolar tolerance / wedge radius in scaled pixels
+RADIUS  = 5.0    # epipolar tolerance / wedge radius in scaled pixels
 RATIO   = 0.8    # Lowe ratio-test threshold
 
 
@@ -139,7 +139,7 @@ F = (F / np.abs(F).max()).astype(np.float32)
 # ══════════════════════════════════════════════════════════════════════════════
 
 print("Extracting SIFT features …")
-sift = cv2.SIFT_create(nfeatures=30000, )
+sift = cv2.SIFT_create(nfeatures=50000, )
 g1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
 g2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
 kpts1, desc1 = sift.detectAndCompute(g1, None)
@@ -159,13 +159,13 @@ print(f"\nRunning segment-tree wedge filter  (radius={RADIUS} px) …")
 cands_st, dt_st = epipolar_wedge_filter_with_segment_tree(kp1_arr, kp2_arr, F, RADIUS)
 print(f"  C++ filter time: {dt_st:.2f} ms")
 
+print(f"Running segment-tree wedge (origin)(radius={RADIUS} px) …")
+cands_or, dt_or = epipolar_wedge_filter_with_segment_tree_origin(kp1_arr, kp2_arr, F, RADIUS)
+print(f"  C++ filter time: {dt_or:.2f} ms")
+
 print(f"Running angular hash filter        (tol={RADIUS} px, bins=45) …")
 cands_hash, dt_hash = epipolar_hash_filter_cpp(kp1_arr, kp2_arr, F, tol=RADIUS)
 print(f"  C++ filter time: {dt_hash:.2f} ms")
-
-print(f"Running brute-force distance filter (tolerance={RADIUS} px) …")
-cands_bf, dt_bf = epipolar_geometric_distance_filter(kp1_arr, kp2_arr, F, RADIUS)
-print(f"  C++ filter time: {dt_bf:.2f} ms")
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -189,8 +189,8 @@ def match_within_candidates(desc1, desc2, candidates, ratio=RATIO):
 
 print("\nDescriptor matching within candidates …")
 matches_st   = match_within_candidates(desc1, desc2, cands_st)
+matches_or   = match_within_candidates(desc1, desc2, cands_or)
 matches_hash = match_within_candidates(desc1, desc2, cands_hash)
-matches_bf   = match_within_candidates(desc1, desc2, cands_bf)
 
 # ── OpenCV BF matcher without any epipolar constraint ─────────────────────────
 import time as _time
@@ -204,16 +204,16 @@ matches_cv_bf = [(m.queryIdx, m.trainIdx, m.distance)
                  for m, n in _raw if m.distance < 0.8 * n.distance]
 
 avg_st   = sum(len(c) for c in cands_st)   / max(len(cands_st),   1)
+avg_or   = sum(len(c) for c in cands_or)   / max(len(cands_or),   1)
 avg_hash = sum(len(c) for c in cands_hash) / max(len(cands_hash), 1)
-avg_bf   = sum(len(c) for c in cands_bf)   / max(len(cands_bf),   1)
 
 print(f"\n{'':─<72}")
 print(f"{'Method':<30} {'Matches':>9} {'Avg cands':>11} {'Time (ms)':>10}")
 print(f"{'':─<72}")
 print(f"{'CV BF (no epipolar)':<30} {len(matches_cv_bf):>9}  {'N/A':>9}  {dt_cv_bf:>9.1f}")
-print(f"{'Seg Tree (wedge)':<30} {len(matches_st):>9}  {avg_st:>9.1f}  {dt_st:>9.1f}")
+print(f"{'Seg Tree (optimised)':<30} {len(matches_st):>9}  {avg_st:>9.1f}  {dt_st:>9.1f}")
+print(f"{'Seg Tree (origin)':<30} {len(matches_or):>9}  {avg_or:>9.1f}  {dt_or:>9.1f}")
 print(f"{'Angular Hash':<30} {len(matches_hash):>9}  {avg_hash:>9.1f}  {dt_hash:>9.1f}")
-print(f"{'Brute Force (dist)':<30} {len(matches_bf):>9}  {avg_bf:>9.1f}  {dt_bf:>9.1f}")
 print(f"{'':─<72}")
 
 
@@ -241,9 +241,9 @@ cv2.putText(vis, "DSC_0320 (undistorted)", (10, H - 12), font, fs, (80, 80, 80),
 cv2.putText(vis, "DSC_0323 (undistorted)", (W + 10, H - 12), font, fs, (80, 80, 80), th)
 cv2.putText(vis,
     f"CV-BF: {len(matches_cv_bf)}m {dt_cv_bf:.0f}ms  |  "
-    f"SegTree: {len(matches_st)}m {dt_st:.0f}ms  |  "
-    f"Hash: {len(matches_hash)}m {dt_hash:.0f}ms  |  "
-    f"EpiBF: {len(matches_bf)}m {dt_bf:.0f}ms",
+    f"ST-optim: {len(matches_st)}m {dt_st:.0f}ms  |  "
+    f"ST-origin: {len(matches_or)}m {dt_or:.0f}ms  |  "
+    f"Hash: {len(matches_hash)}m {dt_hash:.0f}ms",
     (10, 22), font, fs, (20, 20, 200), th)
 
 out_path = Path(__file__).parent / "demo_real_matches.png"

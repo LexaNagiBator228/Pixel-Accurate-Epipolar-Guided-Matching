@@ -2,7 +2,6 @@
 // Pixel-accurate epipolar guided matching via segment tree
 // Exposes two functions to Python:
 //   epipolar_wedge_filter_with_segment_tree  – O(log N + K) per query
-//   epipolar_geometric_distance_filter        – O(N*M) brute-force baseline
 
 // MSVC does not define M_PI by default
 #define _USE_MATH_DEFINES
@@ -69,12 +68,16 @@ static Points from_numpy(const py::array_t<float> &arr)
 
 /* ── epipole via Eigen SVD (stack-allocated, no OpenCV) ───────────────────── */
 // Returns the right null-vector of M, normalised so that e(2) == 1.
+// Uses double precision internally: the null vector of a near-rank-2 float32
+// matrix is poorly conditioned in float32, but the extra precision is free
+// (3x3 Jacobi SVD on 9 doubles is negligible vs. the O(N) build phase).
 static Eigen::Vector3f computeEpipole(const Eigen::Matrix3f &M)
 {
-    Eigen::JacobiSVD<Eigen::Matrix3f> svd(M, Eigen::ComputeFullV);
-    Eigen::Vector3f e = svd.matrixV().col(2);
+    const Eigen::Matrix3d Md = M.cast<double>();
+    Eigen::JacobiSVD<Eigen::Matrix3d> svd(Md, Eigen::ComputeFullV);
+    Eigen::Vector3d e = svd.matrixV().col(2);
     e /= e(2);
-    return e;
+    return e.cast<float>();
 }
 
 /* ── tangent-wedge angular interval ──────────────────────────────────────── */
@@ -100,50 +103,6 @@ inline bool compute_tangent_angles(float ex, float ey,
     a2 = wrap_angle(std::atan2(ky + vy - qy - ey, kx + vx - qx - ex) * kRad2Deg, max_angle);
     if (wrap_angle(a2 - a1, max_angle) > 180.f) std::swap(a1, a2);
     return true;
-}
-
-/* ════════════════════════════════════════════════════════════════════════════
- *  BRUTE-FORCE EPIPOLAR DISTANCE FILTER
- *  For each kp1[i] keep every kp2[j] whose distance to the epipolar line ≤ tol
- * ════════════════════════════════════════════════════════════════════════════ */
-static CandidateList epipolar_geometric_distance_filter(
-    const Points &kp1, const Points &kp2,
-    const Eigen::Ref<const Eigen::Matrix3f> &F,
-    float tolerance_px)
-{
-    const int N1 = static_cast<int>(kp1.size());
-    const int N2 = static_cast<int>(kp2.size());
-
-    CandidateList cand(N1);
-    for (auto &v : cand) v.reserve(8);
-
-    // Raw pointers let the compiler prove non-aliasing and emit SIMD code.
-    const float *__restrict kp2x = kp2.x.data();
-    const float *__restrict kp2y = kp2.y.data();
-
-    // Work is uniform across iterations → schedule(static) has lower overhead
-    // than schedule(dynamic).
-#pragma omp parallel for schedule(static)
-    for (int i = 0; i < N1; ++i)
-    {
-        const float p1x = kp1.x[i], p1y = kp1.y[i];
-        // l = F * [p1x, p1y, 1]^T
-        const float a = F(0,0)*p1x + F(0,1)*p1y + F(0,2);
-        const float b = F(1,0)*p1x + F(1,1)*p1y + F(1,2);
-        const float c = F(2,0)*p1x + F(2,1)*p1y + F(2,2);
-        // Distance check without sqrt or division:
-        //   |a*x + b*y + c| / sqrt(a²+b²) <= tol
-        //   ↔  (a*x + b*y + c)² <= tol² * (a² + b²)
-        // The inner loop is now purely FMA + compare → auto-vectorisable.
-        const float tol_sq_norm = tolerance_px * tolerance_px * (a*a + b*b);
-        for (int j = 0; j < N2; ++j)
-        {
-            const float num = a * kp2x[j] + b * kp2y[j] + c;
-            if (num * num <= tol_sq_norm)
-                cand[i].push_back(j);
-        }
-    }
-    return cand;
 }
 
 /* ════════════════════════════════════════════════════════════════════════════
@@ -185,9 +144,13 @@ static CandidateList epipolar_wedge_filter_with_segment_tree_origin(
         }
     };
 
+    // Expand by a small epsilon so the angular wedge is a guaranteed superset
+    // of the exact point-to-line distance criterion.  The post-filter below
+    // applies the exact criterion and removes any false positives.
+    const float build_radius = radius + 0.5f;
     for (int j = 0; j < N2; ++j) {
         float a1, a2;
-        if (!compute_tangent_angles(ex, ey, kp2.x[j], kp2.y[j], radius, a1, a2, MAX_ANGLE)) {
+        if (!compute_tangent_angles(ex, ey, kp2.x[j], kp2.y[j], build_radius, a1, a2, MAX_ANGLE)) {
             index_pts_in_disk.push_back(j);
             continue;
         }
@@ -276,17 +239,38 @@ static CandidateList epipolar_wedge_filter_with_segment_tree_origin(
     const int N1 = static_cast<int>(kp1.size());
     CandidateList cand(N1);
 
+    const float F00 = F(0,0), F01 = F(0,1), F02 = F(0,2);
+    const float F10 = F(1,0), F11 = F(1,1), F12 = F(1,2);
+    const float F20 = F(2,0), F21 = F(2,1), F22 = F(2,2);
+    const float *__restrict kp2x = kp2.x.data();
+    const float *__restrict kp2y = kp2.y.data();
+
 #pragma omp parallel for schedule(dynamic)
     for (int i = 0; i < N1; ++i) {
         std::vector<int> buf;
         buf.insert(buf.end(), index_pts_in_disk.begin(), index_pts_in_disk.end());
 
         const float p1x = kp1.x[i], p1y = kp1.y[i];
-        const float lx  = F(0,0)*p1x + F(0,1)*p1y + F(0,2);
-        const float ly  = F(1,0)*p1x + F(1,1)*p1y + F(1,2);
-        const float ang = wrap_angle(std::atan2(-lx, ly) * kRad2Deg, MAX_ANGLE);
+        const float la  = F00*p1x + F01*p1y + F02;
+        const float lb  = F10*p1x + F11*p1y + F12;
+        const float lc  = F20*p1x + F21*p1y + F22;
+        const float ang = wrap_angle(std::atan2(-la, lb) * kRad2Deg, MAX_ANGLE);
 
         query(ang, buf);
+
+        // Distance post-filter: replace the angular approximation with the
+        // exact point-to-line criterion.  The tree was built with an expanded
+        // radius (radius+0.5px) so the wedge is a guaranteed superset;
+        // this pass removes the excess.
+        const float tol_sq = radius * radius * (la*la + lb*lb);
+        int w = 0;
+        for (int k = 0; k < static_cast<int>(buf.size()); ++k) {
+            const int j = buf[k];
+            const float r = la * kp2x[j] + lb * kp2y[j] + lc;
+            if (r * r <= tol_sq) buf[w++] = j;
+        }
+        buf.resize(w);
+
         cand[i] = std::move(buf);
     }
 
@@ -348,9 +332,13 @@ static CandidateList epipolar_wedge_filter_with_segment_tree(
         }
     };
 
+    // Expand by a small epsilon so the angular wedge is a guaranteed superset
+    // of the exact point-to-line distance criterion.  The post-filter below
+    // applies the exact criterion and removes any false positives.
+    const float build_radius = radius + 0.5f;
     for (int j = 0; j < N2; ++j) {
         float a1, a2;
-        if (!compute_tangent_angles(ex, ey, kp2.x[j], kp2.y[j], radius, a1, a2, MAX_ANGLE)) {
+        if (!compute_tangent_angles(ex, ey, kp2.x[j], kp2.y[j], build_radius, a1, a2, MAX_ANGLE)) {
             index_pts_in_disk.push_back(j);
             continue;
         }
@@ -463,35 +451,42 @@ static CandidateList epipolar_wedge_filter_with_segment_tree(
     // Pre-scalar F values — avoids Eigen operator() in the hot loop.
     const float F00 = F(0,0), F01 = F(0,1), F02 = F(0,2);
     const float F10 = F(1,0), F11 = F(1,1), F12 = F(1,2);
+    const float F20 = F(2,0), F21 = F(2,1), F22 = F(2,2);
 
-    // schedule(static): query cost is log(N)+K — fairly uniform across
-    // iterations (same tree, similar K).  Static avoids dynamic's per-chunk
-    // atomic and has lower thread-barrier overhead.
-#pragma omp parallel for schedule(static)
+    const float *__restrict kp2x = kp2.x.data();
+    const float *__restrict kp2y = kp2.y.data();
+
+#pragma omp parallel for schedule(dynamic)
     for (int i = 0; i < N1; ++i)
     {
-        // Both vectors are thread_local: allocated once per OS thread,
-        // reused across all N1 iterations → zero heap alloc per query.
+        // stk is thread_local: grows to tree depth once, then zero alloc.
+        // buf is a plain local: std::move into cand[i] is O(1), no copy.
         thread_local std::vector<int> stk;
-        thread_local std::vector<int> buf;
+        std::vector<int> buf;
 
-        buf.clear();
-        // Reserve capacity heuristic: thread_local buf keeps its allocated
-        // capacity from the previous iteration, so after warmup this is free.
-        // The first few calls may reallocate; the reserve below caps that.
-        if (buf.capacity() < index_pts_in_disk.size() + 32)
-            buf.reserve(index_pts_in_disk.size() + 128);
         if (!index_pts_in_disk.empty())
             buf.insert(buf.end(), index_pts_in_disk.begin(), index_pts_in_disk.end());
 
         const float p1x = kp1.x[i], p1y = kp1.y[i];
-        const float lx  = F00*p1x + F01*p1y + F02;
-        const float ly  = F10*p1x + F11*p1y + F12;
-        const float ang = wrap_angle(std::atan2(-lx, ly) * kRad2Deg, MAX_ANGLE);
+        const float la  = F00*p1x + F01*p1y + F02;
+        const float lb  = F10*p1x + F11*p1y + F12;
+        const float lc  = F20*p1x + F21*p1y + F22;
+        const float ang = wrap_angle(std::atan2(-la, lb) * kRad2Deg, MAX_ANGLE);
 
         query(ang, buf, stk);
 
-        cand[i] = buf;   // copy (buf keeps its capacity for the next iteration)
+        // Distance post-filter: the angular wedge is a superset of the true
+        // point-to-line distance criterion.  Apply the exact check to remove
+        // false positives.
+        const float tol_sq = radius * radius * (la*la + lb*lb);
+        buf.erase(
+            std::remove_if(buf.begin(), buf.end(), [&](int j) {
+                const float r = la * kp2x[j] + lb * kp2y[j] + lc;
+                return r * r > tol_sq;
+            }),
+            buf.end());
+
+        cand[i] = std::move(buf);
     }
 
     return cand;
@@ -706,30 +701,7 @@ static CandidateList epipolar_hash_filter_cpp(
  * ════════════════════════════════════════════════════════════════════════════ */
 PYBIND11_MODULE(guided_desc_match, m)
 {
-    m.doc() = "Pixel-accurate epipolar guided matching (segment-tree + brute-force)";
-
-    // ── epipolar_geometric_distance_filter ───────────────────────────────────
-    m.def(
-        "epipolar_geometric_distance_filter",
-        [](const py::array_t<float> &kp1_arr,
-           const py::array_t<float> &kp2_arr,
-           const Eigen::Matrix3f    &F,
-           float tol)
-        {
-            auto t0 = std::chrono::high_resolution_clock::now();
-            auto cand = epipolar_geometric_distance_filter(
-                from_numpy(kp1_arr), from_numpy(kp2_arr), F, tol);
-            auto t1 = std::chrono::high_resolution_clock::now();
-            double elapsed_ms = std::chrono::duration<double, std::milli>(t1 - t0).count();
-            return std::make_tuple(cand, elapsed_ms);
-        },
-        py::arg("kp1"), py::arg("kp2"), py::arg("F"), py::arg("tolerance"),
-        "Brute-force epipolar distance filter.\n"
-        "Args:\n"
-        "  kp1, kp2   : (N,2) float32 numpy arrays\n"
-        "  F          : 3x3 fundamental matrix (numpy float32)\n"
-        "  tolerance  : pixel tolerance\n"
-        "Returns: (List[List[int]], float) – candidate kp2 indices for each kp1, elapsed ms");
+    m.doc() = "Pixel-accurate epipolar guided matching via segment tree";
 
     // ── epipolar_wedge_filter_with_segment_tree_origin ───────────────────────
     m.def(

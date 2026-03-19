@@ -1,0 +1,29 @@
+# ── C++ build artifacts ────────────────────────────────────────────────────────
+cpp/build/
+
+# ── Compiled Python extensions ─────────────────────────────────────────────────
+*.so
+*.pyd
+*.dll
+*.dylib
+
+# ── Python cache ───────────────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ── Demo output images ─────────────────────────────────────────────────────────
+demo_matches.png
+demo_real_matches.png
+
+# ── Stray shell-created files ──────────────────────────────────────────────────
+os
+subprocess
+sys
+
+# ── pip / setuptools ───────────────────────────────────────────────────────────
+*.egg-info/
+dist/
+build/
+.eggs/
