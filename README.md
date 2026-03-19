@@ -77,17 +77,17 @@ The script configures and builds the CMake project, placing the compiled `.so` m
 python demo.py
 ```
 
-Generates two synthetic camera views of 30 k random 3-D points, runs all three epipolar filters (Seg Tree optimised, Seg Tree origin, Angular Hash), prints a recall/timing table, and saves a visualisation to `demo_matches.png`.
+Generates two synthetic camera views of 10 k random 3-D points, runs all three epipolar filters (Seg Tree optimised, Angular Hash), prints a recall/timing table, and saves a visualisation to `demo_matches.png`.
 
 Expected output (approximate):
 ```
-Method                           Recall   Avg cands   Time (ms)
-────────────────────────────────────────────────────────────────
-CV BF (no epipolar)               0.951         N/A        ...
-Seg Tree (origin)                 1.000       284.4        ...
-Seg Tree (optimised)              1.000       284.4        ...
-Angular Hash                      1.000       284.4        ...
-────────────────────────────────────────────────────────────────
+────────────────────────────────────────────────────────────────────────
+Method                           Recall   Avg cands  Time (ms)
+────────────────────────────────────────────────────────────────────────
+CV BF (no epipolar)            0.964        N/A      183.5
+Seg Tree (optimised)           1.000      530.3        5.1
+Angular Hash                   1.000      530.3       12.4
+────────────────────────────────────────────────────────────────────────
 ```
 
 ### Real-image demo — calibrated fisheye pair
@@ -96,7 +96,18 @@ Angular Hash                      1.000       284.4        ...
 python demo_real.py
 ```
 
-Loads a pair of fisheye images from `exc/`, undistorts them using COLMAP camera parameters, extracts 45 k SIFT keypoints per image, and matches them with each filter. Saves results to `demo_real_matches.png`.
+Loads a pair of fisheye images from `exc/`, undistorts them using COLMAP camera parameters, extracts 50 k SIFT keypoints per image, and matches them with each filter. Saves results to `demo_real_matches.png`.
+
+Expected output (approximate):
+```
+────────────────────────────────────────────────────────────────────────
+Method                           Matches   Avg cands  Time (ms)
+────────────────────────────────────────────────────────────────────────
+CV BF (no epipolar)                 4198        N/A     2905.4
+Seg Tree (optimised)                4336      284.4       14.1
+Angular Hash                        4336      284.4       97.2
+────────────────────────────────────────────────────────────────────────
+```
 
 Requires the following files in `exc/`:
 

@@ -19,7 +19,6 @@ import cv2
 try:
     from epipolar_matching import (
         epipolar_wedge_filter_with_segment_tree,
-        epipolar_wedge_filter_with_segment_tree_origin,
         epipolar_hash_filter_cpp,
     )
 except ImportError:
@@ -40,7 +39,7 @@ K = np.array([[600., 0., W / 2.],
               [0.,   0.,     1.]], dtype=np.float32)
 
 # Random 3D points in front of camera 1
-N = 10000
+N = 50000
 pts3d = np.random.uniform(-1.5, 1.5, (N, 3)).astype(np.float32)
 pts3d[:, 2] += 10.0          # push in front (Z > 0)
 
@@ -131,11 +130,6 @@ dt_cv_bf = (_t1 - _t0) * 1000
 good_cv_bf = [m for m, n in raw_matches if m.distance < 0.8 * n.distance]
 print(f"  OpenCV BF time: {dt_cv_bf:.2f} ms   matches: {len(good_cv_bf)}")
 
-# ── Segment tree filter (origin) ───────────────────────────────────────────────
-print(f"\nRunning segment tree filter (origin) (radius = {RADIUS} px) …")
-cands_or, dt_or = epipolar_wedge_filter_with_segment_tree_origin(kp1_list, kp2_list, F, RADIUS)
-print(f"  C++ matching time: {dt_or:.2f} ms")
-
 # ── Segment tree filter (optimised) ───────────────────────────────────────────
 print(f"\nRunning segment tree filter (optim)  (radius = {RADIUS} px) …")
 cands_st, dt_st = epipolar_wedge_filter_with_segment_tree(kp1_list, kp2_list, F, RADIUS)
@@ -157,7 +151,6 @@ def evaluate(cands):
     avg_cands = sum(map(len, cands)) / len(cands)
     return hits, avg_cands
 
-hits_or,   avg_or   = evaluate(cands_or)
 hits_st,   avg_st   = evaluate(cands_st)
 hits_hash, avg_hash = evaluate(cands_hash)
 
@@ -165,7 +158,6 @@ print(f"\n{'':─<72}")
 print(f"{'Method':<30} {'Recall':>8} {'Avg cands':>11} {'Time (ms)':>10}")
 print(f"{'':─<72}")
 print(f"{'CV BF (no epipolar)':<30} {len(good_cv_bf)/n:.3f}  {'N/A':>9}  {dt_cv_bf:>9.1f}")
-print(f"{'Seg Tree (origin)':<30} {hits_or/n:.3f}  {avg_or:>9.1f}  {dt_or:>9.1f}")
 print(f"{'Seg Tree (optimised)':<30} {hits_st/n:.3f}  {avg_st:>9.1f}  {dt_st:>9.1f}")
 print(f"{'Angular Hash':<30} {hits_hash/n:.3f}  {avg_hash:>9.1f}  {dt_hash:>9.1f}")
 print(f"{'':─<72}")
@@ -206,8 +198,7 @@ cv2.putText(vis, "Image 1",
 cv2.putText(vis, "Image 2",
             (W + 10, H - 12), font, fs, (80, 80, 80), thick)
 cv2.putText(vis,
-            f"ST-origin {dt_or:.1f}ms  |  ST-optim {dt_st:.1f}ms  |  "
-            f"Hash {dt_hash:.1f}ms",
+            f"ST-optim {dt_st:.1f}ms  |  Hash {dt_hash:.1f}ms",
             (10, 22), font, fs * 0.75, (30, 30, 30), thick)
 
 out_path = Path(__file__).parent / "demo_matches.png"
