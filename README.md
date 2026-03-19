@@ -115,8 +115,8 @@ Requires the following files in `exc/`:
 |------|-------------|
 | `cameras.txt` | COLMAP `THIN_PRISM_FISHEYE` camera model |
 | `images_mod.txt` | COLMAP images file (DSC_0320 and DSC_0321 entries) |
-| `DSC_0320.JPG` | First fisheye image |
-| `DSC_0321.JPG` | Second fisheye image |
+| `DSC_0320.JPG` | First  image |
+| `DSC_0321.JPG` | Second  image |
 
 ## 📚 Citation
 
