@@ -1,33 +1,48 @@
 # Pixel-Accurate Epipolar Guided Matching
 
-<div align="center">
+<p align="center"><strong>3DV 2026</strong></p>
 
-**[3DV 2026]**
+<p align="center">
+  <a href="#">📄 Paper (Coming Soon)</a> &nbsp;|&nbsp;
+  <a href="https://github.com/LexaNagiBator228/Pixel-Accurate-Epipolar-Guided-Matching">💻 Code</a> &nbsp;|&nbsp;
+  <a href="https://lexanagibator228.github.io/Pixel-Accurate-Epipolar-Guided-Matching/">🌐 Project Page</a>
+</p>
 
-[📄 Paper (Coming Soon)](#) | [💻 Code](https://github.com/LexaNagiBator228/Pixel-Accurate-Epipolar-Guided-Matching) | [🌐 Project Page](https://lexanagibator228.github.io/Pixel-Accurate-Epipolar-Guided-Matching/)
+<p align="center"><em>Official implementation of "Pixel-Accurate Epipolar Guided Matching" — 3DV 2026</em></p>
+
+<p align="center">
+  <img src="docs/assets/teaser_figure_page-0001.jpg" alt="Method overview" width="800">
+</p>
 
 ---
 
-*Official implementation of "Pixel-Accurate Epipolar Guided Matching" accepted at 3DV 2026*
+## News
+- **[March 2026]** Code released.
+- **[January 2026]** Paper accepted to 3DV 2026!
+- **[Coming Soon]** Paper on arXiv.
 
-</div>
-
-## 🔥 News
-- **[Jan 2026]** Paper accepted to 3DV 2026! 🎉
-- **[Coming Soon]** Paper will be available on arXiv
-
-## 📖 Abstract
+## Abstract
 
 Keypoint matching can be slow and unreliable in challenging conditions such as repetitive textures or wide-baseline views. In such cases, known geometric relations (e.g., the fundamental matrix) can be used to restrict potential correspondences to a narrow epipolar envelope, thereby reducing the search space and improving robustness. These epipolar-guided matching approaches have proved effective in tasks such as SfM; however, most rely on coarse spatial binning, which introduces approximation errors, requires costly post-processing, and may miss valid correspondences. We address these limitations with an exact formulation that performs candidate selection directly in angular space. In our approach, each keypoint is assigned a tolerance circle which, when viewed from the epipole, defines an angular interval. Matching then becomes a 1D angular interval query, solved efficiently in logarithmic time with a segment tree. This guarantees pixel-level tolerance, supports per-keypoint control, and removes unnecessary descriptor comparisons. Extensive evaluation on ETH3D demonstrates noticeable speedups over existing approaches while recovering exact correspondence sets.
 
-## 🏗️ Method Overview
+## Method Overview
 
 - **Angular Interval Formulation**: Each keypoint's tolerance disk defines a 1D angular interval as seen from the epipole
 - **Segment Tree Data Structure**: Enables O(log N + K) candidate queries vs. O(N) for brute-force methods
 - **Exact Geometric Filtering**: Pixel-level precision with no approximation errors
 - **Per-Keypoint Control**: Supports individual tolerance settings
 
-## 🚀 Installation
+## Results
+
+<p align="center">
+  <img src="docs/assets/matching_num%20(1)_page-0001.jpg" alt="Quantitative results on ETH3D" width="800">
+</p>
+
+<p align="center">
+  <img src="demo_real_matches.png" alt="Guided SIFT matching on a real calibrated image pair" width="800">
+</p>
+
+## Installation
 
 ### Requirements
 
@@ -67,9 +82,9 @@ pip install numpy opencv-python pybind11
 bash build.sh
 ```
 
-The script configures and builds the CMake project, placing the compiled `.so` module in `epipolar_matching/` so it is importable directly from the repo root.
+The script configures CMake and builds the project, placing the compiled `.so` module in `epipolar_matching/`.
 
-## 🧪 Running the Demos
+## Running the Demos
 
 ### Synthetic demo — no data needed
 
@@ -77,7 +92,7 @@ The script configures and builds the CMake project, placing the compiled `.so` m
 python demo.py
 ```
 
-Generates two synthetic camera views of 10 k random 3-D points, runs all three epipolar filters (Seg Tree optimised, Angular Hash), prints a recall/timing table, and saves a visualisation to `demo_matches.png`.
+Generates two synthetic camera views of 50 k random 3-D points, runs the epipolar filters (Seg Tree, Angular Hash), prints a recall/timing table, and saves `demo_matches.png`.
 
 Expected output (approximate):
 ```
@@ -115,31 +130,25 @@ Requires the following files in `exc/`:
 |------|-------------|
 | `cameras.txt` | COLMAP `THIN_PRISM_FISHEYE` camera model |
 | `images_mod.txt` | COLMAP images file (DSC_0320 and DSC_0321 entries) |
-| `DSC_0320.JPG` | First  image |
-| `DSC_0321.JPG` | Second  image |
+| `DSC_0320.JPG` | First image |
+| `DSC_0321.JPG` | Second image |
 
-## 📚 Citation
+## Citation
 
 If you find this work useful for your research, please consider citing:
 
 ```bibtex
-@inproceedings{nasypanyi2026pixel,
-    title     = {Pixel-Accurate Epipolar Guided Matching},
-    author    = {Oleksii Nasypanyi and Francois Rameau},
-    booktitle = {International Conference on 3D Vision (3DV)},
-    year      = {2026}
+@inproceedings{
+nasypanyi2026pixelaccurate,
+title={Pixel-Accurate Epipolar Guided Matching},
+author={Oleksii Nasypanyi and Francois Rameau},
+booktitle={Thirteenth International Conference on 3D Vision},
+year={2026},
+url={https://openreview.net/forum?id=9zRX5HrpnA}
 }
 ```
 
-## 📧 Contact
+## Contact
 
 - Oleksii Nasypanyi — [oleksii.nasypanyi@stonybrook.edu](mailto:oleksii.nasypanyi@stonybrook.edu) (Stony Brook University)
 - Francois Rameau (SUNY Korea)
-
----
-
-<div align="center">
-
-**⭐ If you find this project useful, please consider giving it a star! ⭐**
-
-</div>

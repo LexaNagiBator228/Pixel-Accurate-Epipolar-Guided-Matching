@@ -153,13 +153,22 @@
       border-left: 4px solid #27ae60;
     }
 
-    .citation pre {
+    .news h2 {
+      border-bottom: none;
+      padding-bottom: 0;
+      margin-top: 0;
+    }
+
+    .citation-block {
       background: #f1f1f1;
       padding: 20px;
       border-radius: 8px;
+      overflow-x: auto;
+    }
+
+    .citation-block pre {
       font-family: monospace;
       font-size: 0.9em;
-      overflow-x: auto;
       white-space: pre;
       margin: 0;
     }
@@ -189,10 +198,10 @@
 
     <!-- Links -->
     <div class="links">
-      <a href="#" class="disabled">&#128196; Paper (Coming Soon)</a>
-      <a href="https://github.com/LexaNagiBator228/Pixel-Accurate-Epipolar-Guided-Matching">&#128187; Code</a>
-      <a href="#" class="disabled">&#128202; Data (Coming Soon)</a>
-      <a href="#" class="disabled">&#127909; Video (Coming Soon)</a>
+      <a href="#" class="disabled">📄 Paper (Coming Soon)</a>
+      <a href="https://github.com/LexaNagiBator228/Pixel-Accurate-Epipolar-Guided-Matching">💻 Code</a>
+      <a href="#" class="disabled">📊 Data (Coming Soon)</a>
+      <a href="#" class="disabled">🎥 Video (Coming Soon)</a>
     </div>
 
     <!-- Teaser Figure -->
@@ -297,15 +306,15 @@
     </div>
 
     <!-- Citation -->
-    <div class="section citation">
+    <div class="section">
       <h2>Citation</h2>
       <p>If you find this work useful for your research, please consider citing:</p>
-      <pre>@inproceedings{nasypanyi2026pixel,
+      <div class="citation-block"><pre>@inproceedings{nasypanyi2026pixel,
   title     = {Pixel-Accurate Epipolar Guided Matching},
   author    = {Oleksii Nasypanyi and Francois Rameau},
   booktitle = {International Conference on 3D Vision (3DV)},
   year      = {2026}
-}</pre>
+}</pre></div>
     </div>
 
     <!-- Contact -->
