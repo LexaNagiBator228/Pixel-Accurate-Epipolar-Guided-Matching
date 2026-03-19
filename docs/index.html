@@ -49,20 +49,23 @@
     }
 
     .links {
-      text-align: center;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
       margin: 30px 0;
     }
 
     .links a {
       display: inline-block;
-      margin: 0 15px;
       padding: 12px 24px;
       background: #3498db;
       color: white;
       text-decoration: none;
       border-radius: 25px;
       font-weight: bold;
-      transition: all 0.3s;
+      transition: background 0.2s, transform 0.2s;
+      white-space: nowrap;
     }
 
     .links a:hover {
@@ -72,39 +75,26 @@
 
     .links a.disabled {
       background: #95a5a6;
-      cursor: not-allowed;
+      cursor: default;
+      pointer-events: none;
       opacity: 0.7;
-    }
-
-    .links a.disabled:hover {
-      background: #95a5a6;
-      transform: none;
-    }
-
-    .teaser {
-      text-align: center;
-      margin: 40px 0;
     }
 
     .figure {
       text-align: center;
       margin: 40px 0;
-      background: white;
+      background: #fafafa;
       padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
     }
 
-    .figure img,
-    .figure object {
+    .figure img {
       max-width: 100%;
-      width: 100%;
-      height: 60vh;
-      min-height: 400px;
-      max-height: 600px;
+      height: auto;
       border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
-      object-fit: contain;
+      display: block;
+      margin: 0 auto;
     }
 
     .figure-caption {
@@ -144,7 +134,7 @@
 
     .features {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 20px;
       margin: 30px 0;
     }
@@ -163,12 +153,15 @@
       border-left: 4px solid #27ae60;
     }
 
-    .citation {
+    .citation pre {
       background: #f1f1f1;
       padding: 20px;
       border-radius: 8px;
       font-family: monospace;
+      font-size: 0.9em;
       overflow-x: auto;
+      white-space: pre;
+      margin: 0;
     }
 
     .footer {
@@ -183,6 +176,7 @@
 
 <body>
   <div class="container">
+
     <!-- Title and Header -->
     <div class="title">
       <h1>Pixel-Accurate Epipolar Guided Matching</h1>
@@ -195,31 +189,31 @@
 
     <!-- Links -->
     <div class="links">
-      <a href="#" class="disabled">📄 Paper (Coming Soon)</a>
-      <a href="https://github.com/LexaNagiBator228/Pixel-Accurate-Epipolar-Guided-Matching">💻 Code</a>
-      <a href="#" class="disabled">📊 Data (Coming Soon)</a>
-      <a href="#" class="disabled">🎥 Video (Coming Soon)</a>
+      <a href="#" class="disabled">&#128196; Paper (Coming Soon)</a>
+      <a href="https://github.com/LexaNagiBator228/Pixel-Accurate-Epipolar-Guided-Matching">&#128187; Code</a>
+      <a href="#" class="disabled">&#128202; Data (Coming Soon)</a>
+      <a href="#" class="disabled">&#127909; Video (Coming Soon)</a>
     </div>
 
     <!-- Teaser Figure -->
     <div class="figure">
       <img src="assets/teaser_figure_page-0001.jpg"
-        alt="Teaser Figure - Angular interval-based epipolar guided matching overview">
+        alt="Teaser Figure: Angular interval-based epipolar guided matching overview">
       <div class="figure-caption">
         <span class="figure-number">Figure 1:</span> Overview of our angular interval-based epipolar guided matching.
-        Keypoints are associated with tolerance circles viewed as angular intervals from the epipole, enabling fast
-        candidate queries using segment trees.
+        Each keypoint's tolerance disk defines an angular interval as seen from the epipole, enabling O(log N + K)
+        candidate queries with a segment tree.
       </div>
     </div>
 
     <!-- News -->
     <div class="section">
       <div class="news">
-        <h2>🔥 News</h2>
+        <h2>News</h2>
         <ul>
-          <li><strong>[January 2026]</strong> Paper accepted to 3DV 2026! 🎉</li>
-          <li><strong>[Coming Soon]</strong> Source code will be released upon paper acceptance</li>
-          <li><strong>[Coming Soon]</strong> Paper will be available on arXiv</li>
+          <li><strong>[March 2026]</strong> Code released on <a href="https://github.com/LexaNagiBator228/Pixel-Accurate-Epipolar-Guided-Matching">GitHub</a>.</li>
+          <li><strong>[January 2026]</strong> Paper accepted to 3DV 2026!</li>
+          <li><strong>[Coming Soon]</strong> Paper will be available on arXiv.</li>
         </ul>
       </div>
     </div>
@@ -229,12 +223,15 @@
       <h2>Abstract</h2>
       <p>Keypoint matching can be slow and unreliable in challenging conditions such as repetitive textures or
         wide-baseline views. In such cases, known geometric relations (e.g., the fundamental matrix) can be used to
-        restrict potential correspondences to a narrow epipolar envelope, thereby reducing the search space and
-        improving robustness. These epipolar-guided matching approaches have proved effective in tasks such as SfM;
-        however, most rely on coarse spatial binning, which introduces approximation errors, requires costly
-        post-processing, and may miss valid correspondences. We address these limitations with an exact formulation that
-        performs candidate selection directly in angular space using tolerance circles and segment trees for
-        logarithmic-time queries.</p>
+        restrict potential correspondences to a narrow epipolar envelope, thereby reducing the search space and improving
+        robustness. These epipolar-guided matching approaches have proved effective in tasks such as SfM; however, most
+        rely on coarse spatial binning, which introduces approximation errors, requires costly post-processing, and may
+        miss valid correspondences. We address these limitations with an exact formulation that performs candidate
+        selection directly in angular space. In our approach, each keypoint is assigned a tolerance circle which, when
+        viewed from the epipole, defines an angular interval. Matching then becomes a 1D angular interval query, solved
+        efficiently in logarithmic time with a segment tree. This guarantees pixel-level tolerance, supports per-keypoint
+        control, and removes unnecessary descriptor comparisons. Extensive evaluation on ETH3D demonstrates noticeable
+        speedups over existing approaches while recovering exact correspondence sets.</p>
     </div>
 
     <!-- Key Features -->
@@ -242,20 +239,20 @@
       <h2>Key Features</h2>
       <div class="features">
         <div class="feature-card">
-          <h3>🎯 Exact Formulation</h3>
-          <p>Pixel-level tolerance without approximation errors or spatial discretization</p>
+          <h3>Exact Formulation</h3>
+          <p>Pixel-level tolerance without approximation errors or spatial discretization.</p>
         </div>
         <div class="feature-card">
-          <h3>🚪️ Fast Queries</h3>
-          <p>Logarithmic-time candidate retrieval using segment tree data structure</p>
+          <h3>Fast Queries</h3>
+          <p>O(log N + K) candidate retrieval per query using a segment tree.</p>
         </div>
         <div class="feature-card">
-          <h3>⚡ Efficient</h3>
-          <p>Eliminates unnecessary descriptor comparisons and geometric post-processing</p>
+          <h3>Perfect Recall</h3>
+          <p>Recovers all valid correspondences within the epipolar envelope.</p>
         </div>
         <div class="feature-card">
-          <h3>🏆 Flexible Control</h3>
-          <p>Per-keypoint tolerance settings and robust handling of epipole configurations</p>
+          <h3>Per-Keypoint Control</h3>
+          <p>Supports individual tolerance settings and handles all epipole configurations.</p>
         </div>
       </div>
     </div>
@@ -266,14 +263,13 @@
       <p>Our approach introduces several key innovations:</p>
       <ul>
         <li><strong>Angular Interval Formulation:</strong> Reformulates epipolar envelope constraints as 1D angular
-          intervals viewed from the epipole</li>
-        <li><strong>Tolerance Circle Method:</strong> Associates each keypoint with tolerance circles that define
-          angular visibility regions</li>
-        <li><strong>Segment Tree Data Structure:</strong> Enables logarithmic-time candidate queries using balanced
-          segment trees</li>
-        <li><strong>Exact Geometric Filtering:</strong> Guarantees pixel-level precision without approximation errors or
-          post-processing</li>
-        <li><strong>Per-Keypoint Control:</strong> Supports individual tolerance settings for enhanced flexibility</li>
+          intervals viewed from the epipole.</li>
+        <li><strong>Tolerance Circle Method:</strong> Associates each keypoint with a tolerance disk that defines
+          an angular visibility region.</li>
+        <li><strong>Segment Tree Data Structure:</strong> Enables O(log N + K) candidate queries using a balanced
+          segment tree over angular intervals.</li>
+        <li><strong>Exact Geometric Filtering:</strong> Guarantees pixel-level precision with no approximation
+          errors or post-processing heuristics.</li>
       </ul>
     </div>
 
@@ -281,52 +277,52 @@
     <div class="section">
       <h2>Results</h2>
 
-      <!-- Matching Results Figure -->
       <div class="figure">
-        <img src="assets/matching_num (1)_page-0001.jpg" alt="Matching Results - Quantitative performance comparison">
+        <img src="assets/matching_num%20(1)_page-0001.jpg"
+          alt="Matching Results: Quantitative performance comparison on ETH3D">
         <div class="figure-caption">
-          <span class="figure-number">Figure 2:</span> Quantitative matching results demonstrating the effectiveness of
-          our pixel-accurate epipolar guided approach.
+          <span class="figure-number">Figure 2:</span> Quantitative matching results on ETH3D demonstrating speedups
+          over grid-based and epipolar-hashing baselines while achieving perfect candidate recall.
         </div>
       </div>
 
       <p><strong>Key Findings:</strong></p>
       <ul>
-        <li>Consistent speedups over existing epipolar-guided matching approaches (Grid-based and Epipolar Hashing)</li>
-        <li>Perfect candidate recall (1.00) - recovers all valid correspondences within epipolar envelope</li>
-        <li>Logarithmic query complexity O(log n + k) vs linear complexity of existing methods</li>
-        <li>Robust performance across all 13 ETH3D sequences with varying scene complexity</li>
-        <li>Eliminates false positives and negatives through exact geometric formulation</li>
-        <li>Scalable performance: up to 10x faster candidate generation at high keypoint densities (50k points)</li>
+        <li>Consistent speedups over existing epipolar-guided matching approaches (grid-based and Epipolar Hashing).</li>
+        <li>Perfect candidate recall (1.00) — recovers all valid correspondences within the epipolar envelope.</li>
+        <li>O(log N + K) query complexity vs. O(N) for brute-force methods.</li>
+        <li>Robust performance across all 13 ETH3D sequences with varying scene complexity.</li>
+        <li>Scalable to 50k+ keypoints per image.</li>
       </ul>
     </div>
 
     <!-- Citation -->
-    <div class="section">
+    <div class="section citation">
       <h2>Citation</h2>
       <p>If you find this work useful for your research, please consider citing:</p>
-      <div class="citation">
-        @inproceedings{nasypanyi2026pixel,
-        title={Pixel-Accurate Epipolar Guided Matching},
-        author={Oleksii Nasypanyi and Francois Rameau},
-        booktitle={International Conference on 3D Vision (3DV)},
-        year={2026}
-        }
-      </div>
+      <pre>@inproceedings{nasypanyi2026pixel,
+  title     = {Pixel-Accurate Epipolar Guided Matching},
+  author    = {Oleksii Nasypanyi and Francois Rameau},
+  booktitle = {International Conference on 3D Vision (3DV)},
+  year      = {2026}
+}</pre>
     </div>
 
     <!-- Contact -->
     <div class="section">
       <h2>Contact</h2>
-      <p>For questions about this work, please contact: <a href="mailto:your-email@domain.com">your-email@domain.com</a>
+      <p>For questions, please contact
+        <a href="mailto:oleksii.nasypanyi@stonybrook.edu">oleksii.nasypanyi@stonybrook.edu</a>
+        (Stony Brook University).
       </p>
     </div>
 
     <!-- Footer -->
     <div class="footer">
-      <p>© 2026 | This project page will be updated as more materials become available.</p>
-      <p><strong>⭐ Star this project on GitHub if you find it useful! ⭐</strong></p>
+      <p>Pixel-Accurate Epipolar Guided Matching &mdash; 3DV 2026</p>
+      <p><a href="https://github.com/LexaNagiBator228/Pixel-Accurate-Epipolar-Guided-Matching">GitHub</a></p>
     </div>
+
   </div>
 </body>
 
