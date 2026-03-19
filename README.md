@@ -105,13 +105,13 @@ Angular Hash                   1.000      530.3       12.4
 ────────────────────────────────────────────────────────────────────────
 ```
 
-### Real-image demo — calibrated fisheye pair
+### Real-image demo — calibrated  pair
 
 ```bash
 python demo_real.py
 ```
 
-Loads a pair of fisheye images from `exc/`, undistorts them using COLMAP camera parameters, extracts 50 k SIFT keypoints per image, and matches them with each filter. Saves results to `demo_real_matches.png`.
+Loads a pair of images from `exc/`, undistorts them using COLMAP camera parameters, extracts 50 k SIFT keypoints per image, and matches them with each filter. Saves results to `demo_real_matches.png`.
 
 Expected output (approximate):
 ```
