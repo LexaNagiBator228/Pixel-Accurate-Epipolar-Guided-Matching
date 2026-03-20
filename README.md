@@ -3,7 +3,7 @@
 <p align="center"><strong>3DV 2026</strong></p>
 
 <p align="center">
-  <a href="#">📄 Paper (Coming Soon)</a> &nbsp;|&nbsp;
+  <a href=https://arxiv.org/abs/2603.18401>📄 Paper </a> &nbsp;|&nbsp;
   <a href="https://github.com/LexaNagiBator228/Pixel-Accurate-Epipolar-Guided-Matching">💻 Code</a> &nbsp;|&nbsp;
   <a href="https://lexanagibator228.github.io/Pixel-Accurate-Epipolar-Guided-Matching/">🌐 Project Page</a>
 </p>
@@ -16,10 +16,6 @@
 
 ---
 
-## News
-- **[March 2026]** Code released.
-- **[January 2026]** Paper accepted to 3DV 2026!
-- **[Coming Soon]** Paper on arXiv.
 
 ## Abstract
 
